@@ -1,0 +1,4 @@
+Selenium Server repackaged for Testatoo.
+
+This module enables you to use the complete Selenium Server API within your project without having any impact on the classpath.
+Selenium Server includes a huge set of dependencies (i.e. servlet-api, jetty, ...) so you may have classpath issues when using it directly from your project.
