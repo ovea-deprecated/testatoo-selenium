@@ -1,0 +1,129 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.testatoo</groupId>
+        <artifactId>parent</artifactId>
+        <version>3-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.testatoo</groupId>
+    <artifactId>testatoo-selenium</artifactId>
+    <version>1.0-rc1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>testatoo-selenium</name>
+    <description>Selenium Server repackaged</description>
+
+    <dependencies>
+        <!-- packaged in the jar file -->
+        <dependency>
+            <groupId>org.testatoo.openqa</groupId>
+            <artifactId>selenium-server</artifactId>
+            <version>1.0.2_20090715_patched</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.14</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- sadly, selenium server comes with a buggy version of commons-logging.
+        This one will be put before on the classpath to take precedence over it. -->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- testing -->
+        <dependency>
+            <groupId>org.testatoo.openqa</groupId>
+            <artifactId>selenium-java-client-driver</artifactId>
+            <version>1.0.2_20090715</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>testatoo-selenium-server</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <excludeResources>true</excludeResources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <configuration>
+                    <silent>true</silent>
+                    <artifactItems/>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <configuration>
+                            <tasks>
+                                <jar update="true" file="${project.build.directory}/${project.build.finalName}.jar">
+                                    <zipfileset prefix="org/testatoo/selenium/server/embedded" dir="${project.build.directory}/dependency" includes="selenium-server-1.0.2_20090715_patched.jar"/>
+                                    <zipfileset prefix="org/testatoo/selenium/server/embedded" dir="${project.build.directory}/dependency" includes="commons-logging-1.1.1.jar"/>
+                                    <zipfileset prefix="org/testatoo/selenium/server/embedded" dir="${project.build.directory}/dependency" includes="log4j-1.2.14.jar"/>
+                                </jar>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
