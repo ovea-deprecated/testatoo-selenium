@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>testatoo-selenium</artifactId>
-    <version>1.0-rc1-SNAPSHOT</version>
+    <version>1.0-rc1</version>
     <packaging>jar</packaging>
 
     <name>testatoo-selenium</name>
@@ -85,7 +85,7 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <configuration>
                     <silent>true</silent>
-                    <artifactItems/>
+                    <artifactItems />
                 </configuration>
                 <executions>
                     <execution>
@@ -104,9 +104,9 @@
                         <configuration>
                             <tasks>
                                 <jar update="true" file="${project.build.directory}/${project.build.finalName}.jar">
-                                    <zipfileset prefix="org/testatoo/selenium/server/embedded" dir="${project.build.directory}/dependency" includes="selenium-server-1.0.2_20090715_patched.jar"/>
-                                    <zipfileset prefix="org/testatoo/selenium/server/embedded" dir="${project.build.directory}/dependency" includes="commons-logging-1.1.1.jar"/>
-                                    <zipfileset prefix="org/testatoo/selenium/server/embedded" dir="${project.build.directory}/dependency" includes="log4j-1.2.14.jar"/>
+                                    <zipfileset prefix="org/testatoo/selenium/server/embedded" dir="${project.build.directory}/dependency" includes="selenium-server-1.0.2_20090715_patched.jar" />
+                                    <zipfileset prefix="org/testatoo/selenium/server/embedded" dir="${project.build.directory}/dependency" includes="commons-logging-1.1.1.jar" />
+                                    <zipfileset prefix="org/testatoo/selenium/server/embedded" dir="${project.build.directory}/dependency" includes="log4j-1.2.14.jar" />
                                 </jar>
                             </tasks>
                         </configuration>
