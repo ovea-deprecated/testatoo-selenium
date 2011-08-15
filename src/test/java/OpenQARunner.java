@@ -24,6 +24,7 @@ final class OpenQARunner {
     private static SeleniumServer seleniumServer = null;
 
     public static void main(final String... args) throws Exception {
+        System.setProperty("googleChromeDefaultPath", "/opt/google/chrome/chrome");
         Thread t = new Thread(new Runnable() {
             public void run() {
                 try {
@@ -38,7 +39,7 @@ final class OpenQARunner {
         });
         t.start();
         Thread.sleep(5000);
-        Selenium s = new DefaultSelenium("localhost", 5555, "*firefox", "http://www.amazon.ca/");
+        Selenium s = new DefaultSelenium("localhost", 5555, "*googlechrome", "http://www.amazon.ca/");
         s.start();
         s.open("/");
         Thread.sleep(5000);
