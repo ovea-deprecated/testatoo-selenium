@@ -25,9 +25,9 @@ final class OurRunnerCli {
     public static void main(final String... args) throws Exception {
         Thread t = new Thread(new Runnable() {
             public void run() {
-                System.out.println(SeleniumServerFactory.commandeLine("-port", "5555"));
-                System.out.println(SeleniumServerFactory.commandeLine("-port", "5555").create());
-                seleniumServer = SeleniumServerFactory.commandeLine("-port", "5555").create();
+                System.out.println(SeleniumServerFactory.commandeLine("-port", "5555", "-singleWindow"));
+                System.out.println(SeleniumServerFactory.commandeLine("-port", "5555", "-singleWindow").create());
+                seleniumServer = SeleniumServerFactory.commandeLine("-port", "5555", "-singleWindow").create();
                 System.out.println("isRunning:" + seleniumServer.isRunning());
                 seleniumServer.start();
                 System.out.println("isRunning:" + seleniumServer.isRunning());

@@ -35,14 +35,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.testatoo.selenium.server.util.FileUtils.createTemporaryFolder;
-import static org.testatoo.selenium.server.util.ResourceUtils.container;
-import static org.testatoo.selenium.server.util.ResourceUtils.contextResource;
-import static org.testatoo.selenium.server.util.ResourceUtils.url;
+import static org.testatoo.selenium.server.util.ResourceUtils.*;
 
 public final class SeleniumServerFactory {
 
     private static final String JARS_LOCATION = "org/testatoo/selenium/server/embedded/";
-    private static final String[] JARS = {"log4j-1.2.14.jar", "commons-logging-1.1.1.jar", "selenium-server-1.0.2_20090715_patched.jar"};
+    private static final String[] JARS = {"log4j-1.2.16.jar", "commons-logging-1.1.1.jar", "selenium-server-standalone-2.4.0-patched.jar"};
     private static final URL TESTATOO_JAR_LOCATION = container(JARS_LOCATION + JARS[0]);
     private static boolean IN_JAR;
 
@@ -63,77 +61,79 @@ public final class SeleniumServerFactory {
 
     public static SeleniumServerBuilder commandeLine(String... args) {
         final ClassLoader threadClassLoader = IN_JAR ?
-                new IsolatedClassLoader(packagedClasspath()) :
-                new URLClassLoader(new URL[]{contextResource(JARS_LOCATION)}, Thread.currentThread().getContextClassLoader());
+            new IsolatedClassLoader(packagedClasspath()) :
+            new URLClassLoader(new URL[]{contextResource(JARS_LOCATION)}, Thread.currentThread().getContextClassLoader());
         final Object configuration = createRemoteControlConfiguration(threadClassLoader, args);
         return Proxyfier.proxify(configuration, threadClassLoader, SeleniumServerBuilder.class,
-                new MethodHandler() {
-                    public boolean canHandle(Method method) {
-                        return "create".equals(method.getName());
-                    }
+            new MethodHandler() {
+                public boolean canHandle(Method method) {
+                    return "create".equals(method.getName());
+                }
 
-                    public Object invoke(Object instance, Method method, Object... args) throws Throwable {
-                        // invokes new org.openqa.selenium.server.SeleniumServer((RemoteControlConfiguration) instance)
-                        final Class clRemoteControlConfiguration = threadClassLoader.loadClass("org.openqa.selenium.server.RemoteControlConfiguration");
-                        final Class clSeleniumServer = threadClassLoader.loadClass("org.openqa.selenium.server.SeleniumServer");
-                        final Object internalSeleniumServer = clSeleniumServer.getConstructor(clRemoteControlConfiguration).newInstance(instance);
-                        return Proxyfier.proxify(internalSeleniumServer, threadClassLoader, SeleniumServer.class,
-                                new MethodHandler() {
-                                    public boolean canHandle(Method method) {
-                                        return "start".equals(method.getName());
-                                    }
+                public Object invoke(Object instance, Method method, Object... args) throws Throwable {
+                    // invokes new org.openqa.selenium.server.SeleniumServer((RemoteControlConfiguration) instance)
+                    final Class clRemoteControlConfiguration = threadClassLoader.loadClass("org.openqa.selenium.server.RemoteControlConfiguration");
+                    final Class clSeleniumServer = threadClassLoader.loadClass("org.openqa.selenium.server.SeleniumServer");
+                    final Object internalSeleniumServer = clSeleniumServer.getConstructor(clRemoteControlConfiguration).newInstance(instance);
+                    return Proxyfier.proxify(internalSeleniumServer, threadClassLoader, SeleniumServer.class,
+                        new MethodHandler() {
+                            public boolean canHandle(Method method) {
+                                return "start".equals(method.getName());
+                            }
 
-                                    public Object invoke(Object instance, Method method, Object... args) throws Throwable {
-                                        // invokes SeleniumServer.boot()
-                                        System.setProperty("org.mortbay.http.HttpRequest.maxFormContentSize", "0"); // default max is 200k; zero is infinite
-                                        instance.getClass().getMethod("boot").invoke(instance);
-                                        return null;
-                                    }
-                                }, new MethodHandler() {
-                                    public boolean canHandle(Method method) {
-                                        return "isRunning".equals(method.getName());
-                                    }
+                            public Object invoke(Object instance, Method method, Object... args) throws Throwable {
+                                // invokes SeleniumServer.boot()
+                                System.setProperty("org.mortbay.http.HttpRequest.maxFormContentSize", "0"); // default max is 200k; zero is infinite
+                                instance.getClass().getMethod("boot").invoke(instance);
+                                return null;
+                            }
+                        }, new MethodHandler() {
+                            public boolean canHandle(Method method) {
+                                return "isRunning".equals(method.getName());
+                            }
 
-                                    public Object invoke(Object instance, Method method, Object... args) throws Throwable {
-                                        // invokes SeleniumServer.getServer().isStarted()
-                                        final Object jettyServer = instance.getClass().getMethod("getServer").invoke(instance);
-                                        return jettyServer.getClass().getMethod("isStarted").invoke(jettyServer);
-                                    }
-                                },
-                                new MethodHandler() {
-                                    public boolean canHandle(Method method) {
-                                        return method.getName().equals("toString");
-                                    }
+                            public Object invoke(Object instance, Method method, Object... args) throws Throwable {
+                                // invokes SeleniumServer.getServer().isStarted()
+                                final Object jettyServer = instance.getClass().getMethod("getServer").invoke(instance);
+                                return jettyServer.getClass().getMethod("isStarted").invoke(jettyServer);
+                            }
+                        },
+                        new MethodHandler() {
+                            public boolean canHandle(Method method) {
+                                return method.getName().equals("toString");
+                            }
 
-                                    public Object invoke(Object instance, Method method, Object... args) throws Throwable {
-                                        StringBuilder sb = new StringBuilder("Selenium Server:\n");
-                                        for (Field field : configuration.getClass().getDeclaredFields()) {
-                                            if (!Modifier.isStatic(field.getModifiers())) {
-                                                field.setAccessible(true);
-                                                sb.append(" - ").append(field.getName()).append(": ").append(field.get(configuration)).append("\n");
-                                            }
-                                        }
-                                        return sb.toString();
+                            public Object invoke(Object instance, Method method, Object... args) throws Throwable {
+                                StringBuilder sb = new StringBuilder("Selenium Server:\n");
+                                for (Field field : configuration.getClass().getDeclaredFields()) {
+                                    if (!Modifier.isStatic(field.getModifiers())) {
+                                        field.setAccessible(true);
+                                        sb.append(" - ").append(field.getName()).append(": ").append(field.get(configuration)).append("\n");
                                     }
-                                });
-                    }
-                },
-                new MethodHandler() {
-                    public boolean canHandle(Method method) {
-                        return method.getName().equals("toString");
-                    }
-
-                    public Object invoke(Object instance, Method method, Object... args) throws Throwable {
-                        StringBuilder sb = new StringBuilder("Selenium RemoteControlConfiguration:\n");
-                        for (Field field : instance.getClass().getDeclaredFields()) {
-                            if (!Modifier.isStatic(field.getModifiers())) {
-                                field.setAccessible(true);
-                                sb.append(" - ").append(field.getName()).append(": ").append(field.get(instance)).append("\n");
+                                }
+                                return sb.toString();
                             }
                         }
-                        return sb.toString();
+                    );
+                }
+            },
+            new MethodHandler() {
+                public boolean canHandle(Method method) {
+                    return method.getName().equals("toString");
+                }
+
+                public Object invoke(Object instance, Method method, Object... args) throws Throwable {
+                    StringBuilder sb = new StringBuilder("Selenium RemoteControlConfiguration:\n");
+                    for (Field field : instance.getClass().getDeclaredFields()) {
+                        if (!Modifier.isStatic(field.getModifiers())) {
+                            field.setAccessible(true);
+                            sb.append(" - ").append(field.getName()).append(": ").append(field.get(instance)).append("\n");
+                        }
                     }
-                });
+                    return sb.toString();
+                }
+            }
+        );
     }
 
     private static Object createRemoteControlConfiguration(ClassLoader threadClassLoader, String... args) {
