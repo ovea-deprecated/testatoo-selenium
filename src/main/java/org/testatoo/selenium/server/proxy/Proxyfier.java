@@ -38,7 +38,15 @@ public final class Proxyfier {
         return (T) Proxy.newProxyInstance(SearchingClassLoader.combineLoadersOf(interfaces), interfaces, new InvocationHandler() {
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 for (MethodHandler methodHandler : methodHandlers) {
-                    if (methodHandler.canHandle(method)) return methodHandler.invoke(instance, method, args);
+                    if (methodHandler.canHandle(method)) {
+                        final ClassLoader backupCl = Thread.currentThread().getContextClassLoader();
+                        Thread.currentThread().setContextClassLoader(threadClassLoader);
+                        try {
+                            return methodHandler.invoke(instance, method, args);
+                        } finally {
+                            Thread.currentThread().setContextClassLoader(backupCl);
+                        }
+                    }
                 }
                 final ClassLoader backupCl = Thread.currentThread().getContextClassLoader();
                 try {
