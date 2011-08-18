@@ -43,8 +43,12 @@
         </filter>
     </appender>
 
+    <category name="org.openqa.jetty.log">
+        <priority value="INFO"/>
+    </category>
+
     <root>
-        <priority value="WARN"/>
+        <priority value="INFO"/>
         <appender-ref ref="SELENIUM-SERVER-STDOUT"/>
         <appender-ref ref="SELENIUM-SERVER-STDERR"/>
     </root>

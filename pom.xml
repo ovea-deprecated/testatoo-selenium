@@ -37,8 +37,6 @@
             <scope>system</scope>
             <systemPath>${basedir}/src/main/resources/org/testatoo/selenium/server/embedded/log4j-1.2.16.jar</systemPath>
         </dependency>
-        <!-- sadly, selenium server comes with a buggy version of commons-logging.
-        This one will be put before on the classpath to take precedence over it. -->
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
@@ -63,6 +61,16 @@
 
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.testatoo.selenium.server.Start</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
                 <configuration>
