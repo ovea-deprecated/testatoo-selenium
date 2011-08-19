@@ -28,6 +28,7 @@ final class OpenQARunner {
             public void run() {
                 try {
                     RemoteControlConfiguration configuration = RemoteControlLauncher.parseLauncherOptions(new String[]{"-port", "5555", "-singleWindow"});
+                    configuration.setDontTouchLogging(true);
                     seleniumServer = new SeleniumServer(false, configuration);
                     seleniumServer.boot();
                 } catch (Exception e) {
