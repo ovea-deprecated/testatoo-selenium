@@ -27,7 +27,7 @@ final class OurRunnerCli {
             public void run() {
                 System.out.println(SeleniumServerFactory.commandeLine("-port", "5555", "-singleWindow"));
                 System.out.println(SeleniumServerFactory.commandeLine("-port", "5555", "-singleWindow").create());
-                seleniumServer = SeleniumServerFactory.commandeLine("-port", "5555", "-singleWindow").create();
+                seleniumServer = SeleniumServerFactory.commandeLine("-port", "5555", "-singleWindow").setDontTouchLogging(true).create();
                 System.out.println("isRunning:" + seleniumServer.isRunning());
                 seleniumServer.start();
                 System.out.println("isRunning:" + seleniumServer.isRunning());
