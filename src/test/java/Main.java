@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import org.testatoo.selenium.server.SeleniumServerFactory;
 
 /**
@@ -21,7 +22,7 @@ import org.testatoo.selenium.server.SeleniumServerFactory;
 final class Main {
     public static void main(String... args) throws Exception {
         SeleniumServerFactory.configure()
-            .setDontTouchLogging(true)
+            //.setDontTouchLogging(true)
             .setSingleWindow(true)
             .setPort(4444)
             .create()
