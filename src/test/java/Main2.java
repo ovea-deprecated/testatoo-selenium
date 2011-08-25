@@ -25,7 +25,9 @@ final class Main2 {
         Selenium s = new DefaultSelenium("localhost", 4444, "*firefox", "http://www.amazon.ca/");
         s.start();
         s.open("/");
-        Thread.sleep(5000);
-        s.close();
+        for (String s1 : s.getAllButtons()) {
+            System.out.println(s1);
+        }
+        Thread.sleep(10000);
     }
 }
