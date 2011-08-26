@@ -1,5 +1,6 @@
 #!/usr/bin/env groovy
 
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.LinkedBlockingQueue
 import org.testatoo.selenium.server.SeleniumServer
 import org.testatoo.selenium.server.SeleniumServerFactory
@@ -11,8 +12,9 @@ def LISTEN_PORT = args.length > 0 ? args[0] as int : 4444
 def REMOTE_CONTROL_COUNT = args.length > 1 ? args[1] as int : 1
 def ports = new LinkedBlockingQueue()
 def servers = new TreeMap<Integer, SeleniumServer>()
+def cleaners = new ConcurrentHashMap<Thread, Object>()
 
-def showServers = { println "Available Selenium Servers: ${ports}" }
+def showServers = { println 'Available Selenium Servers:' + ports }
 
 def findFreePort = {
     r = new Random()
@@ -28,8 +30,7 @@ def findFreePort = {
 
 def clean = {int p, Socket client, Socket rc ->
     if (!ports.contains(p)) {
-        ports.offer(p)
-        println "Disconnecting client ${client.remoteSocketAddress} from Selenium Server ${p}..."
+        println 'Disconnecting client ' + client.remoteSocketAddress + ' from Selenium Server ' + p + '...'
         try {
             client?.close()
         } catch (e) {}
@@ -41,19 +42,23 @@ def clean = {int p, Socket client, Socket rc ->
         } catch (e) {}
         servers[p] = SeleniumServerFactory.configure().setPort(p).setSingleWindow(true).create()
         servers[p].start()
+        ports.offer(p)
+        if (!Thread.currentThread().isInterrupted()) {
+            showServers()
+        }
     }
 }
 
 def tunnel = {Socket client, int p ->
-    println "Connecting client ${client.remoteSocketAddress} to Selenium Server ${p}..."
+    println 'Connecting client ' + client.remoteSocketAddress + ' to Selenium Server ' + p + '...'
     Socket rc = null
     try {
         rc = new Socket('localhost', p as int)
     } catch (e) {
         clean(p, client, rc)
     }
-    Thread reader = null, writer = null, cleaner = null;
-    reader = Thread.start("${client.remoteSocketAddress} READER", {
+    Thread reader = null, writer = null, cleaner = null, hook = null;
+    reader = Thread.start(client.remoteSocketAddress.toString() + ' READER', {
         while (!Thread.currentThread().isInterrupted()) {
             try {
                 rc.outputStream.write(client.inputStream.read())
@@ -63,7 +68,7 @@ def tunnel = {Socket client, int p ->
             }
         }
     })
-    writer = Thread.start("${client.remoteSocketAddress} WRITER", {
+    writer = Thread.start(client.remoteSocketAddress.toString() + ' WRITER', {
         while (!Thread.currentThread().isInterrupted()) {
             try {
                 client.outputStream.write(rc.inputStream.read())
@@ -84,18 +89,17 @@ def tunnel = {Socket client, int p ->
         } catch (e) {
             reader.interrupt()
         };
-        println "Stopping Selenium Servers..."
         clean(p, client, rc)
     }
-    Runtime.runtime.addShutdownHook(new Thread() {
-        @Override
-        void run() {
-
-            servers.each {k, v -> v.stop()}
-            threads.each {Thread t -> t.interrupt()}
-        }
-    })
+    cleaners.put(cleaner, Void.TYPE)
 }
+
+Runtime.runtime.addShutdownHook(new Thread('CLEANER') {
+    @Override
+    void run() {
+        cleaners.each {k, v -> k.interrupt()}
+    }
+})
 
 println "Starting ${REMOTE_CONTROL_COUNT} Selenium Servers..."
 
@@ -108,7 +112,7 @@ REMOTE_CONTROL_COUNT.times {
 
 showServers()
 
-ServerSocket serverSocket = new ServerSocket(LISTEN_PORT)
+def serverSocket = new ServerSocket(LISTEN_PORT)
 for (;;) {
     socket = null
     try {
