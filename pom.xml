@@ -102,32 +102,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>1.9.0</version>
-                <configuration>
-                    <header>https://github.com/Ovea/testatoo-license/raw/master/LICENSE</header>
-                    <strictCheck>true</strictCheck>
-                    <properties>
-                        <owner>Ovea</owner>
-                        <year>${project.inceptionYear}</year>
-                        <email>dev@testatoo.org</email>
-                    </properties>
-                    <excludes>
-                        <exclude>README</exclude>
-                        <exclude>src/test/resources/**</exclude>
-                        <exclude>**/*.groovy</exclude>
-                        <exclude>**/*.xpi</exclude>
-                        <exclude>**/*.ods</exclude>
-                        <exclude>**/.gitignore</exclude>
-                        <exclude>**/jndi.properties</exclude>
-                        <exclude>**/logging.properties</exclude>
-                        <exclude>**/*.js</exclude>
-                        <exclude>**/*.swf</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
