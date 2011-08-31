@@ -116,6 +116,8 @@ REMOTE_CONTROL_COUNT.times {
 
 showServers()
 
+println "Listening for incoming requests on port ${LISTEN_PORT}..."
+
 def serverSocket = new ServerSocket(LISTEN_PORT)
 for (;;) {
     socket = null
