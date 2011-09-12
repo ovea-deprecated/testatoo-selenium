@@ -11,7 +11,7 @@ import com.ovea.network.util.NetUtils
 
 @GrabResolver(name = 'testatoo', root = 'http://oss.sonatype.org/content/repositories/snapshots/')
 @Grab('org.testatoo:testatoo-selenium:1.0-rc2')
-@Grab('com.ovea:ovea-pipe:1.0.ga-SNAPSHOT')
+@Grab('com.ovea:ovea-pipe:1.0.ga')
 
 def LISTEN_PORT = args.length > 0 ? args[0] as int : 4444
 def REMOTE_CONTROL_COUNT = args.length > 1 ? args[1] as int : 5
