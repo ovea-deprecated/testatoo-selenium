@@ -76,7 +76,7 @@
         <dependency>
             <groupId>com.ovea</groupId>
             <artifactId>ovea-pipe</artifactId>
-            <version>1.0.ga-SNAPSHOT</version>
+            <version>1.0.ga</version>
             <optional>true</optional>
         </dependency>
     </dependencies>
