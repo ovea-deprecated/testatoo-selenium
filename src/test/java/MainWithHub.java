@@ -20,7 +20,7 @@ import com.thoughtworks.selenium.Selenium;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class Main2 {
+final class MainWithHub {
     public static void main(String... args) throws Exception {
         Selenium s = new DefaultSelenium("localhost", 4444, "*firefox", "http://www.amazon.ca/");
         s.start();
