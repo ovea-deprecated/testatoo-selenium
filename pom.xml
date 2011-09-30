@@ -121,6 +121,7 @@
                     </properties>
                     <excludes>
                         <exclude>README</exclude>
+                        <exclude>src/test/java/org/openqa/**</exclude>
                         <exclude>src/test/resources/**</exclude>
                         <exclude>**/*.xpi</exclude>
                         <exclude>**/*.groovy</exclude>
