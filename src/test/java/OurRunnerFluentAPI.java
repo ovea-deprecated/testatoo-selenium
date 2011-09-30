@@ -25,7 +25,10 @@ final class OurRunnerFluentAPI {
     public static void main(final String... args) throws Exception {
         Thread t = new Thread(new Runnable() {
             public void run() {
-                seleniumServer = SeleniumServerFactory.configure().setPort(5555).create();
+                seleniumServer = SeleniumServerFactory.configure()
+                    .setPort(5555)
+                    .setSingleWindow(true)
+                    .create();
                 System.out.println("isRunning:" + seleniumServer.isRunning());
                 seleniumServer.start();
                 System.out.println("isRunning:" + seleniumServer.isRunning());

@@ -1,6 +1,7 @@
+user_pref("extensions.firebug.currentVersion", "1.8.3");
 user_pref("extensions.firebug.addonBarOpened", true);
 user_pref("extensions.firebug.allPagesActivation", "on");
-user_pref("extensions.firebug.breakOnErrors", true);
+user_pref("extensions.firebug.breakOnErrors", false);
 user_pref("extensions.firebug.console.enableSites", true);
 user_pref("extensions.firebug.cookies.enableSites", true);
 user_pref("extensions.firebug.defaultPanelName", "console");
