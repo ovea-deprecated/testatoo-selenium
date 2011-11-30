@@ -1,4 +1,4 @@
-user_pref("extensions.firebug.currentVersion", "1.8.3");
+user_pref("extensions.firebug.currentVersion", "1.8.4");
 user_pref("extensions.firebug.addonBarOpened", true);
 user_pref("extensions.firebug.allPagesActivation", "on");
 user_pref("extensions.firebug.breakOnErrors", false);
