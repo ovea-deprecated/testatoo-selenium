@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>testatoo-selenium</artifactId>
-    <version>1.1.ga-SNAPSHOT</version>
+    <version>2.17.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>testatoo-selenium</name>
@@ -26,10 +26,10 @@
         <dependency>
             <groupId>org.testatoo.openqa</groupId>
             <artifactId>selenium-server</artifactId>
-            <version>2.14.0-patched</version>
+            <version>2.17.0-patched</version>
             <scope>system</scope>
             <systemPath>
-                ${basedir}/src/main/resources/org/testatoo/selenium/server/embedded/selenium-server-standalone-2.14.0-patched.jar
+                ${basedir}/src/main/resources/org/testatoo/selenium/server/embedded/selenium-server-standalone-2.17.0-patched.jar
             </systemPath>
         </dependency>
         <dependency>
