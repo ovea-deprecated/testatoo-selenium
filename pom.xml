@@ -131,6 +131,8 @@
                         <exclude>**/logging.properties</exclude>
                         <exclude>**/*.js</exclude>
                         <exclude>**/*.swf</exclude>
+                        <exclude>.idea/**</exclude>
+                        <exclude>.eclipse/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>
