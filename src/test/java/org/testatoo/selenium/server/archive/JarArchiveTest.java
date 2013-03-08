@@ -27,7 +27,7 @@ import static org.testatoo.selenium.server.util.ResourceUtils.url;
 public final class JarArchiveTest {
     @Test
     public void test_extract() throws Exception {
-        Archive a = ArchiveFactory.jar(url(new File("src/test/data/log4j-1.2.14.jar")));
+        Archive a = ArchiveFactory.jar(url(new File("src/main/resources/org/testatoo/selenium/server/embedded/log4j-1.2.16.jar")));
         File dest = createTemporaryFolder("testatoo-");
         System.out.println("Temp dir created: " + dest);
         a.extract(dest, "org/apache/log4j/xml/**", "org/apache/log4j/jdbc/**");
