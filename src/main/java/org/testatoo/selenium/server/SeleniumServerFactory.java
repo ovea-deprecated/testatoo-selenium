@@ -40,7 +40,7 @@ import static org.testatoo.selenium.server.util.ResourceUtils.*;
 public final class SeleniumServerFactory {
 
     private static final String JARS_LOCATION = "org/testatoo/selenium/server/embedded/";
-    private static final String[] JARS = {"log4j-1.2.16.jar", "commons-logging-1.1.1.jar", "selenium-server-standalone-2.17.0-patched.jar"};
+    private static final String[] JARS = {"log4j-1.2.16.jar", "commons-logging-1.1.1.jar", "selenium-server-standalone-2.31.0-patched.jar"};
     private static final URL TESTATOO_JAR_LOCATION = container(JARS_LOCATION + JARS[0]);
     private static boolean IN_JAR;
 

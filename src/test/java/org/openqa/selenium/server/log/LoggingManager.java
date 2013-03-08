@@ -1,3 +1,21 @@
+/*
+Copyright 2012 Selenium committers
+Copyright 2012 Software Freedom Conservancy
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+
 package org.openqa.selenium.server.log;
 
 import org.apache.commons.logging.Log;
@@ -65,7 +83,7 @@ public class LoggingManager {
 
     private static void addInMemoryLogger(Logger logger, RemoteControlConfiguration configuration) {
         shortTermMemoryHandler = new ShortTermMemoryHandler(
-            configuration.shortTermMemoryLoggerCapacity(), Level.INFO, new TerseFormatter(true));
+                configuration.shortTermMemoryLoggerCapacity(), Level.INFO, new TerseFormatter(true));
         logger.addHandler(shortTermMemoryHandler);
     }
 
@@ -73,12 +91,12 @@ public class LoggingManager {
                                             RemoteControlConfiguration configuration, boolean debugMode) {
         if (debugMode) {
             perSessionLogHandler =
-                new DefaultPerSessionLogHandler(configuration.shortTermMemoryLoggerCapacity(),
-                    Level.FINE, new TerseFormatter(true));
+                    new DefaultPerSessionLogHandler(configuration.shortTermMemoryLoggerCapacity(),
+                            Level.FINE, new TerseFormatter(true), configuration.isCaptureOfLogsOnQuitEnabled());
         } else {
             perSessionLogHandler =
-                new DefaultPerSessionLogHandler(configuration.shortTermMemoryLoggerCapacity(),
-                    Level.INFO, new TerseFormatter(true));
+                    new DefaultPerSessionLogHandler(configuration.shortTermMemoryLoggerCapacity(),
+                            Level.INFO, new TerseFormatter(true), configuration.isCaptureOfLogsOnQuitEnabled());
         }
         logger.addHandler(perSessionLogHandler);
     }
@@ -122,16 +140,16 @@ public class LoggingManager {
                     final StdOutHandler stdOutHandler;
                     final Level originalLevel;
 
-                    /*
-                    * DGF - Nobody likes the SimpleFormatter; surely they wanted our terse formatter instead.
-                    */
+          /*
+           * DGF - Nobody likes the SimpleFormatter; surely they wanted our terse formatter instead.
+           */
                     originalLevel = handler.getLevel();
                     handler.setFormatter(new TerseFormatter(false));
                     handler.setLevel(Level.WARNING);
 
-                    /*
-                    * Furthermore, we all want DEBUG/INFO on stdout and WARN/ERROR on stderr
-                    */
+          /*
+           * Furthermore, we all want DEBUG/INFO on stdout and WARN/ERROR on stderr
+           */
                     stdOutHandler = new StdOutHandler();
                     stdOutHandler.setFormatter(new TerseFormatter(false));
                     stdOutHandler.setFilter(new MaxLevelFilter(Level.FINEST));
@@ -166,7 +184,7 @@ public class LoggingManager {
         }
         for (Handler handler : originalHandlers) {
             logger.addHandler(handler);
-            // jbevan: java.util.logging.Handler.setFormatter(null) throws an NPE
+            // jbevan: java.util.logging.RestishHandler.setFormatter(null) throws an NPE
             if (originalFormatters.get(handler) != null) {
                 handler.setFormatter(originalFormatters.get(handler));
             }
